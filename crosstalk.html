@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>🎵 串联 · 嘉加 × 澄晏</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@300;400;600&family=Space+Mono&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #f5f0e8; --bg2: #ede8de; --ink: #1a1510; --ink2: #5a5048;
+  --ink3: #9a9088; --accent: #c8773a; --accent2: #7a5c8a;
+  --line: #d5cfc5; --card: white;
+  --shadow: 0 2px 12px rgba(26,21,16,0.08);
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body { background:var(--bg); color:var(--ink); font-family:'Noto Serif SC',serif; min-height:100vh; }
+header { background:var(--ink); color:var(--bg); padding:14px 20px; position:sticky; top:0; z-index:100; display:flex; justify-content:space-between; align-items:center; }
+.h-title { font-family:'Space Mono',monospace; font-size:13px; letter-spacing:3px; }
+.h-sub { font-size:10px; opacity:.5; font-family:'Space Mono',monospace; }
+.tabs { display:flex; background:var(--bg2); border-bottom:1px solid var(--line); position:sticky; top:53px; z-index:99; }
+.tab { flex:1; padding:12px 8px; text-align:center; font-size:11px; letter-spacing:2px; color:var(--ink3); cursor:pointer; border-bottom:2px solid transparent; font-family:'Space Mono',monospace; transition:all .2s; }
+.tab.active { color:var(--accent); border-bottom-color:var(--accent); }
+.page { display:none; padding:16px; }
+.page.active { display:block; }
+.card { background:var(--card); border-radius:12px; padding:16px; margin-bottom:12px; box-shadow:var(--shadow); }
+.label { font-size:10px; letter-spacing:2px; color:var(--ink3); font-family:'Space Mono',monospace; margin-bottom:8px; display:block; }
+input, textarea { width:100%; border:1px solid var(--line); border-radius:8px; padding:10px 12px; font-family:'Noto Serif SC',serif; font-size:14px; color:var(--ink); background:var(--bg); outline:none; transition:border-color .2s; margin-bottom:12px; }
+input:focus, textarea:focus { border-color:var(--accent); }
+textarea { resize:vertical; min-height:72px; }
+.tags-wrap { display:flex; flex-wrap:wrap; gap:6px; margin-bottom:12px; }
+.tag { padding:4px 10px; border-radius:20px; border:1px solid var(--line); font-size:11px; color:var(--ink2); cursor:pointer; user-select:none; transition:all .15s; }
+.tag.on { background:var(--accent); border-color:var(--accent); color:white; }
+.btn { width:100%; padding:13px; border-radius:8px; border:none; font-family:'Space Mono',monospace; font-size:12px; letter-spacing:2px; cursor:pointer; transition:all .2s; }
+.btn-p { background:var(--accent); color:white; }
+.btn-p:active { transform:scale(.98); }
+.btn-s { background:transparent; color:var(--ink2); border:1px solid var(--line); margin-top:8px; }
+.search-item { display:flex; gap:10px; align-items:center; padding:8px; border-radius:8px; cursor:pointer; margin-bottom:4px; }
+.search-item:hover, .search-item:active { background:var(--bg2); }
+.search-cover { width:40px; height:40px; border-radius:4px; object-fit:cover; }
+.search-title { font-size:13px; font-weight:600; }
+.search-artist { font-size:11px; color:var(--ink3); }
+.ex-theme { font-size:11px; letter-spacing:2px; color:var(--ink3); font-family:'Space Mono',monospace; margin-bottom:10px; }
+.ex-theme em { color:var(--accent); font-style:normal; }
+.songs-row { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:10px; }
+.song-side { border-radius:8px; padding:12px; }
+.song-side.c { background:#fdf6ee; }
+.song-side.u { background:#f0ebf5; }
+.who { font-size:9px; letter-spacing:2px; font-family:'Space Mono',monospace; margin-bottom:6px; }
+.c .who { color:var(--accent); }
+.u .who { color:var(--accent2); }
+.song-img { width:100%; aspect-ratio:1; border-radius:6px; object-fit:cover; margin-bottom:8px; }
+.song-ph { width:100%; aspect-ratio:1; border-radius:6px; background:var(--line); display:flex; align-items:center; justify-content:center; font-size:24px; margin-bottom:8px; }
+.song-name { font-size:13px; font-weight:600; margin-bottom:2px; }
+.song-art { font-size:11px; color:var(--ink3); margin-bottom:4px; }
+.song-note { font-size:11px; color:var(--ink2); font-style:italic; line-height:1.5; }
+.stags { display:flex; flex-wrap:wrap; gap:3px; margin-top:5px; }
+.stag { font-size:9px; padding:2px 6px; border-radius:10px; background:var(--bg2); color:var(--ink3); font-family:'Space Mono',monospace; }
+.cmt-wrap { border-top:1px solid var(--line); padding-top:10px; margin-top:4px; }
+.cmt-item { padding:7px 9px; border-radius:6px; margin-bottom:5px; font-size:12px; line-height:1.6; }
+.cmt-item.u { background:#f0ebf5; }
+.cmt-item.c { background:#fdf6ee; }
+.cmt-who { font-size:9px; font-family:'Space Mono',monospace; letter-spacing:1px; margin-bottom:2px; }
+.cmt-item.u .cmt-who { color:var(--accent2); }
+.cmt-item.c .cmt-who { color:var(--accent); }
+.cmt-row { display:flex; gap:8px; margin-top:8px; }
+.cmt-input { flex:1; border:1px solid var(--line); border-radius:6px; padding:8px 10px; font-family:'Noto Serif SC',serif; font-size:12px; background:var(--bg); outline:none; margin-bottom:0; }
+.cmt-send { padding:8px 14px; background:var(--ink); color:white; border:none; border-radius:6px; font-family:'Space Mono',monospace; font-size:12px; cursor:pointer; white-space:nowrap; }
+.fab { position:fixed; bottom:24px; right:20px; width:48px; height:48px; border-radius:50%; background:var(--ink); color:white; border:none; font-size:18px; cursor:pointer; box-shadow:0 4px 16px rgba(26,21,16,.2); z-index:200; }
+.empty { text-align:center; padding:48px 20px; color:var(--ink3); }
+.empty-icon { font-size:36px; margin-bottom:12px; }
+.empty-text { font-size:13px; line-height:1.8; }
+.pending-pill { display:inline-block; font-size:9px; padding:3px 8px; border-radius:10px; background:#fff3e0; color:#e65100; font-family:'Space Mono',monospace; letter-spacing:1px; margin-bottom:8px; }
+.loading-msg { text-align:center; padding:40px; color:var(--ink3); font-family:'Space Mono',monospace; font-size:12px; letter-spacing:2px; }
+.toast { position:fixed; bottom:80px; left:50%; transform:translateX(-50%); background:var(--ink); color:var(--bg); padding:10px 20px; border-radius:20px; font-size:12px; font-family:'Space Mono',monospace; z-index:999; opacity:0; transition:opacity .3s; pointer-events:none; white-space:nowrap; }
+.toast.show { opacity:1; }
+.selected-preview { display:flex; gap:10px; align-items:center; padding:10px; background:var(--bg2); border-radius:8px; margin-bottom:12px; }
+</style>
+</head>
+<body>
+<header>
+  <div>
+    <div class="h-title">🎵 串联 CROSSTALK</div>
+    <div class="h-sub">嘉加 × 澄晏</div>
+  </div>
+</header>
+<div class="tabs">
+  <div class="tab active" onclick="goTab('list',this)">交换记录</div>
+  <div class="tab" onclick="goTab('ask',this)">我出题</div>
+  <div class="tab" onclick="goTab('reply',this)">等我回复</div>
+</div>
+<div id="page-list" class="page active"><div class="loading-msg">载入中...</div></div>
+<div id="page-ask" class="page">
+  <div class="card">
+    <span class="label">主题 THEME</span>
+    <input id="a-theme" placeholder="比如：失眠时的歌、今天心情...">
+    <span class="label">歌名 SONG</span>
+    <input id="a-sname" placeholder="歌名（必填）">
+    <span class="label">歌手 ARTIST</span>
+    <input id="a-sartist" placeholder="歌手名（必填）">
+    <span class="label">封面图链接（可选）</span>
+    <input id="a-search" placeholder="搜索自动获取，或粘贴图片链接" oninput="doSearch('a')">
+    <div id="a-results" style="max-height:200px;overflow-y:auto;margin-bottom:8px"></div>
+    <div id="a-preview" style="display:none" class="selected-preview">
+      <img id="a-cover" style="width:48px;height:48px;border-radius:6px;object-fit:cover">
+      <div><div id="a-name" style="font-weight:600;font-size:13px"></div><div id="a-art" style="font-size:11px;color:var(--ink3)"></div></div>
+    </div>
+    <span class="label">备注 NOTE</span>
+    <textarea id="a-note" placeholder="为什么选这首？什么场景下听？"></textarea>
+    <span class="label" style="margin-bottom:4px">天气</span>
+    <div class="tags-wrap" id="tw">
+      <div class="tag" onclick="tog(this)">晴</div><div class="tag" onclick="tog(this)">阴</div>
+      <div class="tag" onclick="tog(this)">雨</div><div class="tag" onclick="tog(this)">雪</div><div class="tag" onclick="tog(this)">风</div>
+    </div>
+    <span class="label" style="margin-bottom:4px">时间</span>
+    <div class="tags-wrap" id="tt">
+      <div class="tag" onclick="tog(this)">清晨</div><div class="tag" onclick="tog(this)">上午</div>
+      <div class="tag" onclick="tog(this)">午后</div><div class="tag" onclick="tog(this)">傍晚</div>
+      <div class="tag" onclick="tog(this)">深夜</div><div class="tag" onclick="tog(this)">失眠</div>
+    </div>
+    <span class="label" style="margin-bottom:4px">场所</span>
+    <div class="tags-wrap" id="tp">
+      <div class="tag" onclick="tog(this)">宿舍</div><div class="tag" onclick="tog(this)">图书馆</div>
+      <div class="tag" onclick="tog(this)">散步</div><div class="tag" onclick="tog(this)">咖啡厅</div><div class="tag" onclick="tog(this)">地铁</div>
+    </div>
+    <span class="label" style="margin-bottom:4px">心情</span>
+    <div class="tags-wrap" id="tm">
+      <div class="tag" onclick="tog(this)">平静</div><div class="tag" onclick="tog(this)">开心</div>
+      <div class="tag" onclick="tog(this)">难过</div><div class="tag" onclick="tog(this)">怀念</div>
+      <div class="tag" onclick="tog(this)">失落</div><div class="tag" onclick="tog(this)">紧张</div>
+    </div>
+    <button class="btn btn-p" onclick="submitAsk()">送出，等澄晏回应 →</button>
+  </div>
+</div>
+<div id="page-reply" class="page"><div class="loading-msg">载入中...</div></div>
+<button class="fab" onclick="refresh()">↻</button>
+<div class="toast" id="toast"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+const SB_URL = 'https://krhohnpepfqqpiuuaqjt.supabase.co';
+const SB_KEY = 'sb_publishable_fZPFZUrBLI3SPMI1BANq8w_gknyB2-z';
+const db = supabase.createClient(SB_URL, SB_KEY);
+
+let askSong = null, stimer = null;
+
+function goTab(id, el) {
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('page-'+id).classList.add('active');
+  if(id==='list') loadList();
+  if(id==='reply') loadReply();
+}
+
+function tog(el){ el.classList.toggle('on'); }
+
+function getTags(prefix){
+  return ['tw','tt','tp','tm'].flatMap(id=>
+    Array.from(document.querySelectorAll('#'+id+' .tag.on')).map(t=>t.textContent)
+  );
+}
+
+function toast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg; t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),2000);
+}
+
+async function doSearch(prefix){
+  clearTimeout(stimer);
+  const q = document.getElementById(prefix+'-search').value.trim();
+  const res = document.getElementById(prefix+'-results');
+  if(!q){res.innerHTML='';return;}
+  stimer = setTimeout(async()=>{
+    res.innerHTML='<div style="padding:8px;font-size:11px;color:var(--ink3)">搜索中...</div>';
+    try{
+      const r = await fetch(`https://itunes.apple.com/search?term=${encodeURIComponent(q)}&media=music&limit=6&entity=song`);
+      const data = await r.json();
+      if(!data.results.length){res.innerHTML='<div style="padding:8px;font-size:11px;color:var(--ink3)">没有找到</div>';return;}
+      res.innerHTML = data.results.map(x=>`
+        <div class="search-item" onclick='pickSong(${JSON.stringify({
+          title:x.trackName,artist:x.artistName,cover:x.artworkUrl100,url:x.trackViewUrl
+        }).replace(/'/g,"&#39;")}, "${prefix}")'>
+          <img class="search-cover" src="${x.artworkUrl100}">
+          <div><div class="search-title">${x.trackName}</div><div class="search-artist">${x.artistName}</div></div>
+        </div>`).join('');
+    }catch(e){res.innerHTML='';}
+  },500);
+}
+
+function pickSong(song, prefix){
+  if(prefix==='a'){
+    askSong=song;
+    document.getElementById('a-results').innerHTML='';
+    document.getElementById('a-search').value=song.title+' - '+song.artist;
+    document.getElementById('a-preview').style.display='flex';
+    document.getElementById('a-cover').src=song.cover;
+    document.getElementById('a-name').textContent=song.title;
+    document.getElementById('a-art').textContent=song.artist;
+  }
+}
+
+async function submitAsk(){
+  const theme=document.getElementById('a-theme').value.trim();
+  if(!theme){toast('请填写主题');return;}
+  const sname=document.getElementById('a-sname').value.trim();
+  const sartist=document.getElementById('a-sartist').value.trim();
+  if(!sname||!sartist){toast('请填写歌名和歌手');return;}
+  const tags=getTags('a');
+  const note=document.getElementById('a-note').value.trim();
+  const cover = askSong?.cover || '';
+  const {error}=await db.from('exchanges').insert({
+    theme, asked_by:'user',
+    user_song:{title:sname,artist:sartist,cover,note,tags}
+  });
+  if(error){toast('提交失败：'+error.message);return;}
+  toast('送出了！等澄晏回应 ♪');
+  document.getElementById('a-theme').value='';
+  document.getElementById('a-search').value='';
+  document.getElementById('a-sname').value='';
+  document.getElementById('a-sartist').value='';
+  document.getElementById('a-note').value='';
+  document.getElementById('a-preview').style.display='none';
+  askSong=null;
+  document.querySelectorAll('#page-ask .tag.on').forEach(t=>t.classList.remove('on'));
+}
+
+async function loadList(){
+  const el=document.getElementById('page-list');
+  el.innerHTML='<div class="loading-msg">载入中...</div>';
+  const {data,error}=await db.from('exchanges').select('*').not('claude_song','is',null).not('user_song','is',null).order('created_at',{ascending:false});
+  if(error||!data.length){
+    el.innerHTML=`<div class="empty"><div class="empty-icon">🎵</div><div class="empty-text">还没有完成的交换<br>去出题让澄晏回应吧</div></div>`;
+    return;
+  }
+  el.innerHTML=data.map(ex=>`
+    <div class="card">
+      <div class="ex-theme">主题 · <em>${ex.theme}</em></div>
+      <div class="songs-row">
+        ${songCard(ex.claude_song,'c','🦦 澄晏')}
+        ${songCard(ex.user_song,'u','🐱 嘉加')}
+      </div>
+      <div class="cmt-wrap">
+        <div id="cmts-${ex.id}"></div>
+        <div class="cmt-row">
+          <input class="cmt-input" id="ci-${ex.id}" placeholder="留言...">
+          <button class="cmt-send" onclick="sendCmt('${ex.id}')">→</button>
+        </div>
+      </div>
+    </div>`).join('');
+  for(const ex of data) loadCmts(ex.id);
+}
+
+function songCard(song,cls,who){
+  if(!song) return `<div class="song-side ${cls}"><div class="who">${who}</div><div style="font-size:11px;color:var(--ink3);padding:8px 0">等待中...</div></div>`;
+  return `<div class="song-side ${cls}">
+    <div class="who">${who}</div>
+    ${song.cover?`<img class="song-img" src="${song.cover}">`:`<div class="song-ph">🎵</div>`}
+    <div class="song-name">${song.title||''}</div>
+    <div class="song-art">${song.artist||''}</div>
+    ${song.note?`<div class="song-note">${song.note}</div>`:''}
+    ${song.tags&&song.tags.length?`<div class="stags">${song.tags.map(t=>`<span class="stag">${t}</span>`).join('')}</div>`:''}
+  </div>`;
+}
+
+async function loadCmts(id){
+  const el=document.getElementById('cmts-'+id);
+  if(!el) return;
+  const {data}=await db.from('comments').select('*').eq('exchange_id',id).order('created_at',{ascending:true});
+  if(!data||!data.length){el.innerHTML='';return;}
+  el.innerHTML=data.map(c=>`
+    <div class="cmt-item ${c.sender}">
+      <div class="cmt-who">${c.sender==='claude'?'🦦 澄晏':'🐱 嘉加'}</div>
+      ${c.content}
+    </div>`).join('');
+}
+
+async function sendCmt(id){
+  const input=document.getElementById('ci-'+id);
+  const content=input.value.trim();
+  if(!content) return;
+  const {error}=await db.from('comments').insert({exchange_id:id,sender:'user',content});
+  if(error){toast('发送失败');return;}
+  input.value='';
+  loadCmts(id);
+}
+
+async function loadReply(){
+  const el=document.getElementById('page-reply');
+  el.innerHTML='<div class="loading-msg">载入中...</div>';
+  const {data,error}=await db.from('exchanges').select('*').eq('asked_by','claude').is('user_song',null).order('created_at',{ascending:false});
+  if(error||!data.length){
+    el.innerHTML=`<div class="empty"><div class="empty-icon">✉️</div><div class="empty-text">暂时没有等你回复的<br>告诉澄晏来出题 ♪</div></div>`;
+    return;
+  }
+  el.innerHTML=data.map(ex=>`
+    <div class="card">
+      <div class="pending-pill">等你回应</div>
+      <div class="ex-theme">澄晏出题 · <em>${ex.theme}</em></div>
+      ${songCard(ex.claude_song,'c','🦦 澄晏')}
+      <div style="margin-top:12px">
+        <span class="label">你的回应</span>
+        <input id="r-search-${ex.id}" placeholder="搜索歌曲" oninput="doReplySearch('${ex.id}')">
+        <div id="r-results-${ex.id}" style="max-height:180px;overflow-y:auto;margin-bottom:8px"></div>
+        <div id="r-preview-${ex.id}" style="display:none" class="selected-preview">
+          <img id="r-cover-${ex.id}" style="width:40px;height:40px;border-radius:4px;object-fit:cover">
+          <div><div id="r-name-${ex.id}" style="font-size:13px;font-weight:600"></div><div id="r-art-${ex.id}" style="font-size:11px;color:var(--ink3)"></div></div>
+        </div>
+        <textarea id="r-note-${ex.id}" placeholder="备注..."></textarea>
+        <button class="btn btn-p" onclick="submitReply('${ex.id}')">回应澄晏 →</button>
+      </div>
+    </div>`).join('');
+}
+
+const replySongs={};
+
+function doReplySearch(id){
+  clearTimeout(stimer);
+  const q=document.getElementById('r-search-'+id).value.trim();
+  const res=document.getElementById('r-results-'+id);
+  if(!q){res.innerHTML='';return;}
+  stimer=setTimeout(async()=>{
+    try{
+      const r=await fetch(`https://itunes.apple.com/search?term=${encodeURIComponent(q)}&media=music&limit=6&entity=song`);
+      const data=await r.json();
+      res.innerHTML=data.results.map(x=>`
+        <div class="search-item" onclick='pickReplySong(${JSON.stringify({
+          title:x.trackName,artist:x.artistName,cover:x.artworkUrl100
+        }).replace(/'/g,"&#39;")}, "${id}")'>
+          <img class="search-cover" src="${x.artworkUrl100}">
+          <div><div class="search-title">${x.trackName}</div><div class="search-artist">${x.artistName}</div></div>
+        </div>`).join('');
+    }catch(e){}
+  },500);
+}
+
+function pickReplySong(song,id){
+  replySongs[id]=song;
+  document.getElementById('r-results-'+id).innerHTML='';
+  document.getElementById('r-search-'+id).value=song.title+' - '+song.artist;
+  document.getElementById('r-preview-'+id).style.display='flex';
+  document.getElementById('r-cover-'+id).src=song.cover;
+  document.getElementById('r-name-'+id).textContent=song.title;
+  document.getElementById('r-art-'+id).textContent=song.artist;
+}
+
+async function submitReply(id){
+  if(!replySongs[id]){toast('请选择一首歌');return;}
+  const note=document.getElementById('r-note-'+id).value.trim();
+  const {error}=await db.from('exchanges').update({user_song:{...replySongs[id],note}}).eq('id',id);
+  if(error){toast('提交失败');return;}
+  toast('回应送出！♪');
+  loadReply();
+}
+
+function refresh(){
+  const active=document.querySelector('.page.active').id;
+  if(active==='page-list') loadList();
+  if(active==='page-reply') loadReply();
+  toast('刷新中...');
+}
+
+window.addEventListener('load',loadList);
+</script>
+</body>
+</html>
